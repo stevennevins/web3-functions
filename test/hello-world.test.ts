@@ -18,7 +18,7 @@ describe("My Web3 Function test", () => {
       secrets,
       storage: {},
       gelatoArgs: {
-        chainId: 17000, // Ethereum Mainnet, commonly referred to as "Holesky"
+        chainId: 17000, 
         gasPrice: parseUnits("100", "gwei").toString(),
       },
       userArgs: {},

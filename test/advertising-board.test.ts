@@ -10,16 +10,16 @@ const w3fPath = path.join(w3fRootDir, w3fName, "index.ts");
 
 describe("Advertising Board Web3 Function test", () => {
   let context: Web3FunctionContextData;
-  let goerliFork: AnvilServer;
+  let holeskyFork: AnvilServer;
 
   beforeAll(async () => {
-    goerliFork = await AnvilServer.fork({
+    holeskyFork = await AnvilServer.fork({
       forkBlockNumber: 100000,
       forkUrl: "https://rpc.ankr.com/eth_holesky",
     });
 
     const { secrets } = Web3FunctionLoader.load(w3fName, w3fRootDir);
-    const gasPrice = (await goerliFork.provider.getGasPrice()).toString();
+    const gasPrice = (await holeskyFork.provider.getGasPrice()).toString();
 
 
 
@@ -35,34 +35,34 @@ describe("Advertising Board Web3 Function test", () => {
   }, 10000);
 
   afterAll(async () => {
-    goerliFork.kill();
+    holeskyFork.kill();
   });
 
   it("canExec: false - Time not elapsed", async () => {
-    const blockTime = (await goerliFork.provider.getBlock("latest")).timestamp;
+    const blockTime = (await holeskyFork.provider.getBlock("latest")).timestamp;
 
     // mock storage state of "lastPost"
     context.storage = { lastPost: blockTime.toString() };
 
   
-    const res = await runWeb3Function(w3fPath, context, [goerliFork.provider]);
+    const res = await runWeb3Function(w3fPath, context, [holeskyFork.provider]);
 
 
     expect(res.result.canExec).toEqual(false);
   });
 
   it("canExec: True - Time elapsed", async () => {
-    const blockTimeBefore = (await goerliFork.provider.getBlock("latest"))
+    const blockTimeBefore = (await holeskyFork.provider.getBlock("latest"))
       .timestamp;
     const nextPostTime = blockTimeBefore + 3600;
 
     // fast forward block time
-    await goerliFork.provider.send("evm_mine", [nextPostTime]);
+    await holeskyFork.provider.send("evm_mine", [nextPostTime]);
 
     // pass current block time
-    const blockTime = (await goerliFork.provider.getBlock("latest")).timestamp;
+    const blockTime = (await holeskyFork.provider.getBlock("latest")).timestamp;
 
-    const res = await runWeb3Function(w3fPath, context, [goerliFork.provider]);
+    const res = await runWeb3Function(w3fPath, context, [holeskyFork.provider]);
 
     expect(res.result.canExec).toEqual(true);
 
