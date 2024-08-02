@@ -10,24 +10,22 @@ const w3fPath = path.join(w3fRootDir, w3fName, "index.ts");
 
 describe("Advertising Board Web3 Function test", () => {
   let context: Web3FunctionContextData;
-  let holeskyFork: AnvilServer;
+  let sepoliaFork: AnvilServer;
 
   beforeAll(async () => {
-    holeskyFork = await AnvilServer.fork({
+    sepoliaFork = await AnvilServer.fork({
       forkBlockNumber: 100000,
-      forkUrl: "https://rpc.ankr.com/eth_holesky",
+      forkUrl: "https://rpc.ankr.com/eth_sepolia",
     });
 
     const { secrets } = Web3FunctionLoader.load(w3fName, w3fRootDir);
-    const gasPrice = (await holeskyFork.provider.getGasPrice()).toString();
-
-
+    const gasPrice = (await sepoliaFork.provider.getGasPrice()).toString();
 
     context = {
       secrets,
       storage: {},
       gelatoArgs: {
-        chainId: 17000,
+        chainId: 11155111,
         gasPrice,
       },
       userArgs: {},
@@ -35,34 +33,32 @@ describe("Advertising Board Web3 Function test", () => {
   }, 10000);
 
   afterAll(async () => {
-    holeskyFork.kill();
+    sepoliaFork.kill();
   });
 
   it("canExec: false - Time not elapsed", async () => {
-    const blockTime = (await holeskyFork.provider.getBlock("latest")).timestamp;
+    const blockTime = (await sepoliaFork.provider.getBlock("latest")).timestamp;
 
     // mock storage state of "lastPost"
     context.storage = { lastPost: blockTime.toString() };
 
-  
-    const res = await runWeb3Function(w3fPath, context, [holeskyFork.provider]);
-
+    const res = await runWeb3Function(w3fPath, context, [sepoliaFork.provider]);
 
     expect(res.result.canExec).toEqual(false);
   });
 
   it("canExec: True - Time elapsed", async () => {
-    const blockTimeBefore = (await holeskyFork.provider.getBlock("latest"))
+    const blockTimeBefore = (await sepoliaFork.provider.getBlock("latest"))
       .timestamp;
     const nextPostTime = blockTimeBefore + 3600;
 
     // fast forward block time
-    await holeskyFork.provider.send("evm_mine", [nextPostTime]);
+    await sepoliaFork.provider.send("evm_mine", [nextPostTime]);
 
     // pass current block time
-    const blockTime = (await holeskyFork.provider.getBlock("latest")).timestamp;
+    const blockTime = (await sepoliaFork.provider.getBlock("latest")).timestamp;
 
-    const res = await runWeb3Function(w3fPath, context, [holeskyFork.provider]);
+    const res = await runWeb3Function(w3fPath, context, [sepoliaFork.provider]);
 
     expect(res.result.canExec).toEqual(true);
 

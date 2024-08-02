@@ -1,5 +1,5 @@
-import { JsonRpcProvider } from "ethers";
-import { Wallet, Signer } from "ethers";
+import { Wallet } from "ethers";
+import { JsonRpcProvider } from "@ethersproject/providers";
 import { AutomateSDK, TriggerType } from "@gelatonetwork/automate-sdk";
 import { Web3FunctionBuilder } from "@gelatonetwork/web3-functions-sdk/builder";
 import * as dotenv from "dotenv";
@@ -13,11 +13,13 @@ if (!process.env.PROVIDER_URLS) throw new Error("Missing env PROVIDER_URL");
 const providerUrl = process.env.PROVIDER_URLS.split(",")[0];
 
 const main = async () => {
-  // Instanciate provider & signer
+  // Instantiate provider & signer
   const provider = new JsonRpcProvider(providerUrl);
-  const chainId = Number(await provider.getNetwork().then(network => network.chainId));
-  const wallet: Signer = new Wallet(pk as string, provider);
-  const automate = new AutomateSDK(chainId, wallet);
+  const chainId = Number(
+    await provider.getNetwork().then((network) => network.chainId)
+  );
+  const signer = new Wallet(pk, provider);
+  const automate = new AutomateSDK(chainId, signer);
 
   // Deploy Web3Function on IPFS
   console.log("Deploying Web3Function on IPFS...");
