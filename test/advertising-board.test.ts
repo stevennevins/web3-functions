@@ -14,8 +14,8 @@ describe("Advertising Board Web3 Function test", () => {
 
   beforeAll(async () => {
     goerliFork = await AnvilServer.fork({
-      forkBlockNumber: 8483100,
-      forkUrl: "https://rpc.ankr.com/eth_goerli",
+      forkBlockNumber: 100000,
+      forkUrl: "https://rpc.ankr.com/eth_holesky",
     });
 
     const { secrets } = Web3FunctionLoader.load(w3fName, w3fRootDir);
@@ -27,7 +27,7 @@ describe("Advertising Board Web3 Function test", () => {
       secrets,
       storage: {},
       gelatoArgs: {
-        chainId: 5,
+        chainId: 17000,
         gasPrice,
       },
       userArgs: {},

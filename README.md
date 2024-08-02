@@ -1,8 +1,10 @@
 # Web3 Functions Template  <!-- omit in toc -->
+
 Use this template to write, test and deploy Web3 Functions.
 
-## What are Web3 Functions? 
-Web3 Functions are decentralized cloud functions that work similarly to AWS Lambda or Google Cloud, just for web3. They enable developers to execute on-chain transactions based on arbitrary off-chain data (APIs / subgraphs, etc) & computation. These functions are written in Typescript, stored on IPFS and run by Gelato. 
+## What are Web3 Functions?
+
+Web3 Functions are decentralized cloud functions that work similarly to AWS Lambda or Google Cloud, just for web3. They enable developers to execute on-chain transactions based on arbitrary off-chain data (APIs / subgraphs, etc) & computation. These functions are written in Typescript, stored on IPFS and run by Gelato.
 
 ## Documentation
 
@@ -32,31 +34,36 @@ Web3 Functions are currently in private Beta and can only be used by whitelisted
   - [Secrets](#secrets)
   - [Advertising Board](#advertising-board)
 
-
 ## Project Setup
+
 1. Install project dependencies
+
 ```
-yarn install
+npm install
 ```
 
-2. Configure your local environment: 
+2. Configure your local environment:
+
 - Copy `.env.example` to init your own `.env` file
+
 ```
 cp .env.example .env
 ```
+
 - Complete your `.env` file with your private settings
+
 ```
 PROVIDER_URLS="" # your provider URLS seperated by comma (e.g. https://eth-mainnet.alchemyapi.io/v2/YOUR_ALCHEMY_ID,https://eth-goerli.alchemyapi.io/v2/YOUR_ALCHEMY_ID)
 
 PRIVATE_KEY="" # optional: only needed if you wish to create a task from the CLI instead of the UI
 ```
 
-
 ## Write a Web3 Function
 
 - Go to  `web3-functions/my-web3-function`
 - Write your Web3 Function logic within the `Web3Function.onRun` function.
 - Example:
+
 ```typescript
 import { Web3Function, Web3FunctionContext } from "@gelatonetwork/web3-functions-sdk";
 import { Contract } from "@ethersproject/contracts";
@@ -104,7 +111,9 @@ Web3Function.onRun(async (context: Web3FunctionContext) => {
   };
 });
 ```
-- Each  Web3 Function has a `schema.json` file to specify the runtime configuration. In later versions you will have more optionality to define what resources your Web3 Function requires. 
+
+- Each  Web3 Function has a `schema.json` file to specify the runtime configuration. In later versions you will have more optionality to define what resources your Web3 Function requires.
+
 ```json
 {
   "web3FunctionVersion": "2.0.0",
@@ -114,7 +123,6 @@ Web3Function.onRun(async (context: Web3FunctionContext) => {
   "userArgs": {}
 }
 ```
-
 
 ## Test your web3 function
 
@@ -129,6 +137,7 @@ Web3Function.onRun(async (context: Web3FunctionContext) => {
 
 - Example:<br/> `npx w3f test web3-functions/oracle/index.ts --logs`
 - Output:
+
 ```
 Web3Function Build result:
  ✓ Schema: web3-functions/oracle/schema.json
@@ -163,7 +172,7 @@ Web3Function Runtime stats:
 ### Writing unit test for your web3 function
 
 - Define your tests in  `test/hellow-world.test.ts`
-- Use `yarn test` command to run unit test suite.
+- Use `npm test` command to run unit test suite.
 
 You can fork a network in your unit test.
 RPC methods of provider can be found in [Foundry's Anvil docs](https://book.getfoundry.sh/reference/anvil/)
@@ -182,14 +191,16 @@ Example: [`test/advertising-board.test.ts`](./test/advertising-board.test.ts)
 ```
 
 ### Calling your web3 function against a local node, i.e. Anvil (Foundry)
+
 1. Update your .env file with the RPC url
 
-2. Spin your local node 
+2. Spin your local node
 
 ```
 npx run forkAnvil
 ```
-3. Update the PROVIDE_URLS with the local server url, i.e. http://127.0.0.1:8545 
+
+3. Update the PROVIDE_URLS with the local server url, i.e. <http://127.0.0.1:8545>
 
 4. Run your test
 
@@ -198,6 +209,7 @@ npx w3f test web3-functions/oracle/index.ts --logs
 ```
 
 ## Use User arguments
+
 1. Declare your expected `userArgs` in your schema, accepted types are 'string', 'string[]', 'number', 'number[]', 'boolean', 'boolean[]':
 
 ```json
@@ -280,6 +292,7 @@ Test storage execution:<br/>
 `npx w3f test web3-functions/storage/index.ts --logs`
 
 You will see your updated key/values:
+
 ```
 Simulated Web3Function Storage update:
  ✓ lastBlockNumber: '8944652'
@@ -313,6 +326,7 @@ Example:<br/>
 `npx w3f deploy web3-functions/oracle/index.ts`
 
 The deployer will output your Web3Function IPFS CID, that you can use to create your task:
+
 ```
  ✓ Web3Function deployed to ipfs.
  ✓ CID: QmVfDbGGN6qfPs5ocu2ZuzLdBsXpu7zdfPwh14LwFUHLnc
@@ -321,8 +335,8 @@ To create a task that runs your Web3 Function every minute, visit:
 > https://beta.app.gelato.network/new-task?cid=QmVfDbGGN6qfPs5ocu2ZuzLdBsXpu7zdfPwh14LwFUHLnc
 ```
 
-
 ## Create your Web3Function task
+
 Use the `automate-sdk` to easily create a new task (make sure you have your private_key in .env):
 
 ```typescript
@@ -349,7 +363,7 @@ If your task utilizes secrets, you can set them after the task has been created.
 ```
 
 Test it with our sample task creation script:<br/>
-`yarn create-task:oracle`
+`npm create-task:oracle`
 
 ```
 Deploying Web3Function on IPFS...
@@ -372,8 +386,7 @@ Run:<br/>
 `npx w3f test web3-functions/oracle/index.ts --logs`
 
 Create task: <br/>
-`yarn create-task:oracle`
-
+`npm create-task:oracle`
 
 ### Event listener
 
@@ -385,9 +398,9 @@ Run:<br/>
 `npx w3f test web3-functions/event-listener/index.ts --logs`
 
 Create task: <br/>
-`yarn create-task:event`
+`npm create-task:event`
 
-### Secrets 
+### Secrets
 
 Fetch data from a private API to update your on-chain Oracle
 
@@ -397,11 +410,11 @@ Run:<br/>
 `npx w3f test web3-functions/secrets/index.ts --logs`
 
 Create task: <br/>
-`yarn create-task:secrets`
+`npm create-task:secrets`
 
 ### Advertising Board
 
-Fetch a random quote from an API and post it on chain. 
+Fetch a random quote from an API and post it on chain.
 
 Source: [`web3-functions/advertising-board/index.ts`](./web3-functions/advertising-board/index.ts)
 
@@ -409,4 +422,4 @@ Run:<br/>
 `npx w3f test web3-functions/advertising-board/index.ts`
 
 Create task: <br/>
-`yarn create-task:ad-board`
+`npm create-task:ad-board`
