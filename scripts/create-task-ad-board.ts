@@ -37,7 +37,7 @@ const main = async () => {
   const { taskId, tx } = await automate.createBatchExecTask({
     name: "Web3Function - Ad Board",
     web3FunctionHash: cid,
-    web3FunctionArgs: {},
+    web3FunctionArgs: { adBoard: "0x8aa5827617b1e19CDfDb2e4aE846281669c2C3dE" },
     trigger: {
       interval: 60 * 1000,
       type: TriggerType.TIME,

@@ -16,7 +16,11 @@ Web3Function.onRun(async (context: Web3FunctionContext) => {
   const provider = multiChainProvider.default();
   const adBoardAddress =
     (userArgs.adBoard as string) ??
-    "0x28a0A1C63E7E8F0DAe5ad633fe232c12b489d5f0";
+    "0x8aa5827617b1e19CDfDb2e4aE846281669c2C3dE";
+
+  if (!adBoardAddress) {
+    return { canExec: false, message: "Missing adBoard address in user args" };
+  }
 
   const lastPost = Number(await storage.get("lastPost")) ?? 0;
   const adBoardContract = new Contract(adBoardAddress, AD_BOARD_ABI);
